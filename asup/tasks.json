@@ -1,0 +1,68 @@
+[
+  {
+    "type": "list",
+    "name": "Cooking",
+    "items": [
+      {
+        "type": "task",
+        "name": "Prepare ingredients",
+        "description": "Gather all necessary ingredients for the recipe.",
+        "completed": false
+      },
+      {
+        "type": "task",
+        "name": "Cook the dish",
+        "description": "Follow the recipe to cook the dish.",
+        "completed": false
+      },
+      {
+        "type": "task",
+        "name": "Serve the dish",
+        "description": "Plate the dish and serve it to guests.",
+        "completed": false
+      }
+    ]
+  },
+  {
+    "type": "list",
+    "name": "Cleaning",
+    "items": [
+      {
+        "type": "task",
+        "name": "Wash dishes",
+        "description": "Clean all used dishes and utensils.",
+        "completed": false
+      },
+      {
+        "type": "task",
+        "name": "Wipe surfaces",
+        "description": "Clean kitchen counters and tables.",
+        "completed": false
+      },
+      {
+        "type": "task",
+        "name": "Take out trash",
+        "description": "Dispose of any garbage collected during cooking.",
+        "completed": false
+      },
+      {
+        "type": "list",
+        "name": "Deep Cleaning",
+        "items": [
+          {
+            "type": "task",
+            "name": "Clean refrigerator",
+            "description": "Remove old food and clean the inside of the fridge.",
+            "completed": false
+          },
+          {
+            "type": "task",
+            "name": "Mop floors",
+            "description": "Mop the kitchen and dining area floors.",
+            "completed": false
+          }
+        ]
+      }
+    ]
+  }
+]
