@@ -1,89 +1,12 @@
-from textual.app import App, ComposeResult
-from textual.containers import HorizontalScroll, VerticalScroll
-from textual.reactive import reactive
+from textual.containers import HorizontalScroll
 from textual.screen import Screen
 from textual.widgets import (
-    Placeholder,
     Header,
     Footer,
-    ListItem,
-    ListView,
-    Label,
     TextArea,
 )
 from textual.app import App, ComposeResult
 from tasks import get_entire_tree, walk_tree, serialize_tree, write_json, Task, TaskList
-
-
-# class Header(Placeholder):
-#     DEFAULT_CSS = """
-#     Header {
-#         height: 3;
-#         dock: top;
-#     }
-#     """
-#
-#
-# class Footer(Placeholder):
-#     DEFAULT_CSS = """
-#     Footer {
-#         height: 3;
-#         dock: bottom;
-#     }
-#     """
-
-
-# class ListItem(Placeholder):
-#     DEFAULT_CSS = """
-#     ListItem {
-#         height: 5;
-#         width: 1fr;
-#         border: tall $background;
-#     }
-#     """
-
-
-# class Column(VerticalScroll):
-#     DEFAULT_CSS = """
-#     Column {
-#         height: 1fr;
-#         width: 1fr;
-#         margin: 0 2;
-#     }
-#     """
-#     selected = reactive(0)
-#     all_items = []
-#
-#     def compose(self) -> ComposeResult:
-#         for tweet_no in range(1, 20):
-#             it = ListItem(id=f"Tweet{tweet_no}")
-#             self.all_items.append(it)
-#             yield it
-#         self.selected = 0
-#
-#     def watch_selected(self, selected: int) -> None:
-#         if 0 <= selected < len(self.all_items):
-#             self.all_items[selected].focus()
-#         else:
-#             self.selected = 0
-#             self.all_items[0].focus()
-#
-#
-# class Column(VerticalScroll):
-#     DEFAULT_CSS = """
-#     Column {
-#         height: 1fr;
-#         width: 1fr;
-#         margin: 0 2;
-#     }
-#     """
-#
-#     def compose(self) -> ComposeResult:
-#         for tweet_no in range(1, 20):
-#             it = ListItem(id=f"Tweet{tweet_no}")
-#             self.all_items.append(it)
-#             yield it
-#         self.selected = 0
 
 
 class BaseScreen(Screen):
@@ -103,14 +26,20 @@ class BaseScreen(Screen):
                 new_node = self.selected_node.add_leaf(
                     "New Task",
                     data=Task(
-                        name="New Task", description="Fill me in", completed=False
+                        name="New Task +",
+                        description="Fill me in",
+                        completed=False,
+                        priority=1,
                     ),
                 )
             else:
                 new_node = self.selected_node.parent.add_leaf(
-                    "New Task",
+                    "New Task +",
                     data=Task(
-                        name="New Task", description="Fill me in", completed=False
+                        name="New Task +",
+                        description="Fill me in",
+                        completed=False,
+                        priority=1,
                     ),
                 )
             self.tree.refresh()
@@ -174,7 +103,6 @@ class BaseScreen(Screen):
     def on_tree_node_highlighted(self, event) -> None:
         self.selected_node = event.node
         node = event.node
-        print(f"HIGHLIGHTED: {node}")
         if node == self.tree.root:
             self.editor.disabled = True
             self.editor.text = "Root node selected, nothing to edit."
@@ -184,12 +112,6 @@ class BaseScreen(Screen):
                 self.editor.text = f"{node.label}\n\n{node.data['description']}"
             else:
                 self.editor.text = f"{node.label}"
-        # for n in walk_tree(self.tree):
-        #     if n == node:
-        #         n.set_label(f"Selected: {n.label}")
-        #     else:
-        #         if str(n.label).startswith("Selected: "):
-        #             n.set_label(str(n.label).replace("Selected: ", ""))
 
     def on_text_area_changed(self):
         if self.editor.disabled:
@@ -208,9 +130,9 @@ class BaseScreen(Screen):
                 print(f"Updated node {node.label} with new description.")
         else:
             print("No node found for the editor.")
-        # TODO turn on again
+        # TODO turn on/off to write to file
         print(serialize_tree(self.tree))
-        # write_json(serialize_tree(self.tree)[0]["items"])
+        write_json(serialize_tree(self.tree)[0]["items"])
 
 
 class Asup(App):

@@ -1,30 +1,37 @@
 import json
 from typing import List, Optional
-from textual.widgets import Label, ListItem, Tree
+import re
+
+from textual.widgets import Tree
 
 
 TASK_JSON_PATH = "tasks.json"
 
 
 class Task(dict):
-    def __init__(self, name: str, description: str = "", completed: bool = False):
+    def __init__(
+        self,
+        name: str,
+        description: str = "",
+        completed: bool = False,
+        priority: int = 0,
+    ) -> None:
         self.type = "task"
         self.name = name
         self.description = description
         self.completed = completed
+        self.priority = priority
         dict.__init__(
             self,
             name=name,
             type=self.type,
             description=description,
             completed=completed,
+            priority=priority,
         )
 
     def __repr__(self):
-        return f"Task(name={self.name}, description={self.description}, completed={self.completed})"
-
-    # def get_list_item(self) -> ListItem:
-    #     return ListItem(Label(f"[T] {self.name}"))
+        return f"Task(name={self.name}, description={self.description}, completed={self.completed}, priority={self.priority})"
 
 
 class TaskList(dict):
@@ -38,9 +45,6 @@ class TaskList(dict):
 
     def __repr__(self):
         return f"TaskList(name={self.name}, tasks={self.tasks})"
-
-    # def get_list_item(self) -> ListItem:
-    #     return ListItem(Label(f"[L] {self.name}"))
 
     def get_depth(self) -> int:
         return 1 + max(
@@ -62,7 +66,14 @@ def parse_tree(data):
     l = []
     for item in data:
         if item["type"] == "task":
-            l.append(Task(item["name"], item["description"], item["completed"]))
+            l.append(
+                Task(
+                    item["name"],
+                    item["description"],
+                    item["completed"],
+                    item["priority"],
+                )
+            )
         elif item["type"] == "list":
             l.append(TaskList(item["name"], parse_tree(item["items"])))
     return l
@@ -81,7 +92,7 @@ def get_entire_tree():
             for subtask in item["tasks"]:
                 handle_node(subtask, new_node)
         else:
-            node.add_leaf(item["name"], data=item)
+            node.add_leaf(item["name"] + " " + "+" * item.priority, data=item)
 
     for task in get_root()["tasks"]:
         handle_node(task, tree.root)
@@ -99,6 +110,14 @@ def walk_tree(tree: Tree):
 
 
 def serialize_tree(tree: Tree) -> List[dict]:
+    def parse_label(label: str) -> List[str]:
+        prio_symbol = "+"
+        # count the number of priority symbols
+        priority = label.count(prio_symbol)
+        # remove the priority symbols from the label
+        name = re.sub(r"\s*" + re.escape(prio_symbol) + r"\s*", "", label)
+        return [name, priority]
+
     def serialize_node(node):
         if node.children:
             return {
@@ -107,11 +126,13 @@ def serialize_tree(tree: Tree) -> List[dict]:
                 "items": [serialize_node(child) for child in node.children],
             }
         else:
+            name, priority = parse_label(str(node.label))
             return {
-                "name": str(node.label),
+                "name": name,
                 "type": "task",
                 "description": node.data.get("description", ""),
                 "completed": node.data.get("completed", False),
+                "priority": priority,
             }
 
     return [serialize_node(tree.root)]
@@ -120,9 +141,3 @@ def serialize_tree(tree: Tree) -> List[dict]:
 def write_json(data: List[dict], path: str = TASK_JSON_PATH) -> None:
     with open(path, "w+") as f:
         json.dump(data, f, indent=2)
-
-
-if __name__ == "__main__":
-    tree = get_entire_tree()
-    for it in walk_tree(tree):
-        print(it.label, it.data)
