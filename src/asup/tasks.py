@@ -1,11 +1,19 @@
+import importlib.resources as pkg_resources
 import json
-from typing import List, Optional
+from pathlib import Path
 import re
+import shutil
+from typing import List, Optional
 
 from textual.widgets import Tree
 
+TASK_JSON_PATH = Path.home() / ".asup.json"
 
-TASK_JSON_PATH = "tasks.json"
+
+def ensure_config_exists():
+    if not TASK_JSON_PATH.exists():
+        with pkg_resources.path("asup", "sample.json") as default_path:
+            shutil.copy(default_path, TASK_JSON_PATH)
 
 
 class Task(dict):

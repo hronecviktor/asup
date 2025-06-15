@@ -30,40 +30,6 @@
         "description": "Put shit in the fridge",
         "completed": false,
         "priority": 1
-      },
-      {
-        "name": "Test List",
-        "type": "list",
-        "items": [
-          {
-            "name": "Test Task",
-            "type": "task",
-            "description": "Fill me in",
-            "completed": false,
-            "priority": 1
-          },
-          {
-            "name": "New prio 2 Task",
-            "type": "task",
-            "description": "Fill me in",
-            "completed": false,
-            "priority": 2
-          },
-          {
-            "name": "New 3 Task",
-            "type": "task",
-            "description": "Fill me in",
-            "completed": false,
-            "priority": 3
-          },
-          {
-            "name": "New Task 2",
-            "type": "task",
-            "description": "Fill me in",
-            "completed": false,
-            "priority": 2
-          }
-        ]
       }
     ]
   },

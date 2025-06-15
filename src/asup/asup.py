@@ -6,7 +6,14 @@ from textual.widgets import (
     TextArea,
 )
 from textual.app import App, ComposeResult
-from tasks import get_entire_tree, walk_tree, serialize_tree, write_json, Task, TaskList
+from tasks import (
+    get_entire_tree,
+    ensure_config_exists,
+    serialize_tree,
+    write_json,
+    Task,
+    TaskList,
+)
 
 
 class BaseScreen(Screen):
@@ -152,6 +159,11 @@ class Asup(App):
         self.exit()
 
 
-if __name__ == "__main__":
+def asup():
+    ensure_config_exists()
     app = Asup()
     app.run()
+
+
+if __name__ == "__main__":
+    asup()
