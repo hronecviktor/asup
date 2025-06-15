@@ -1,6 +1,6 @@
 [
   {
-    "name": "Cooking 123",
+    "name": "Cooking",
     "type": "list",
     "items": [
       {
@@ -111,6 +111,19 @@
             "priority": 1
           }
         ]
+      }
+    ]
+  },
+  {
+    "name": "Work List",
+    "type": "list",
+    "items": [
+      {
+        "name": "Fill in reports",
+        "type": "task",
+        "description": "For tax reporting",
+        "completed": false,
+        "priority": 1
       }
     ]
   }

@@ -24,7 +24,7 @@ class BaseScreen(Screen):
         if self.selected_node:
             if self.selected_node.allow_expand:
                 new_node = self.selected_node.add_leaf(
-                    "New Task",
+                    "New Task +",
                     data=Task(
                         name="New Task +",
                         description="Fill me in",
@@ -118,7 +118,11 @@ class BaseScreen(Screen):
             return
         node = self.selected_node
         if node:
-            label = self.editor.text.splitlines()[0]
+            lines = self.editor.text.splitlines()
+            if not lines or not lines[0].strip():
+                label = ""
+            else:
+                label = lines[0]
             node.set_label(label)
             self.selected_node.data.name = label
             if node.data.type == "task":
