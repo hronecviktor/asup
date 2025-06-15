@@ -6,7 +6,7 @@ from textual.widgets import (
     TextArea,
 )
 from textual.app import App, ComposeResult
-from tasks import (
+from asup.tasks import (
     get_entire_tree,
     ensure_config_exists,
     serialize_tree,
@@ -157,13 +157,3 @@ class Asup(App):
 
     def action_quit(self) -> None:
         self.exit()
-
-
-def asup():
-    ensure_config_exists()
-    app = Asup()
-    app.run()
-
-
-if __name__ == "__main__":
-    asup()

@@ -37,10 +37,18 @@ dependencies = [
   "uc-micro-py==1.0.3"
 ]
 
-[tool.hatch.build]
-include = [
-  "src/asup/sample.json",
-]
+[project.scripts]
+asup = "asup.entrypoint:asup"
+
+#[tool.hatch.build]
+#include = [
+#  "src/asup/sample.json",
+#  "src/asup/__about__.py",
+#  "src/asup/entrypoint.py",
+#  "src/asup/app.py",
+#  "src/asup/tasks.py",
+#  "src/asup/__init__.py",
+#]
 
 [project.urls]
 Documentation = "https://github.com/Viktor Hronec/asup#readme"
