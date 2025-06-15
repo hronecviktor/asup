@@ -3,6 +3,9 @@ from typing import List, Optional
 from textual.widgets import Label, ListItem, Tree
 
 
+TASK_JSON_PATH = "tasks.json"
+
+
 class Task(dict):
     def __init__(self, name: str, description: str = "", completed: bool = False):
         self.type = "task"
@@ -20,8 +23,8 @@ class Task(dict):
     def __repr__(self):
         return f"Task(name={self.name}, description={self.description}, completed={self.completed})"
 
-    def get_list_item(self) -> ListItem:
-        return ListItem(Label(f"[T] {self.name}"))
+    # def get_list_item(self) -> ListItem:
+    #     return ListItem(Label(f"[T] {self.name}"))
 
 
 class TaskList(dict):
@@ -36,8 +39,8 @@ class TaskList(dict):
     def __repr__(self):
         return f"TaskList(name={self.name}, tasks={self.tasks})"
 
-    def get_list_item(self) -> ListItem:
-        return ListItem(Label(f"[L] {self.name}"))
+    # def get_list_item(self) -> ListItem:
+    #     return ListItem(Label(f"[L] {self.name}"))
 
     def get_depth(self) -> int:
         return 1 + max(
@@ -66,7 +69,7 @@ def parse_tree(data):
 
 
 def get_root():
-    return TaskList("Tasks", read_json("tasks.json"))
+    return TaskList("Tasks", read_json(TASK_JSON_PATH))
 
 
 def get_entire_tree():
@@ -95,11 +98,31 @@ def walk_tree(tree: Tree):
             yield node
 
 
+def serialize_tree(tree: Tree) -> List[dict]:
+    def serialize_node(node):
+        if node.children:
+            return {
+                "name": str(node.label),
+                "type": "list",
+                "items": [serialize_node(child) for child in node.children],
+            }
+        else:
+            return {
+                "name": str(node.label),
+                "type": "task",
+                "description": node.data.get("description", ""),
+                "completed": node.data.get("completed", False),
+            }
+
+    return [serialize_node(tree.root)]
+
+
+def write_json(data: List[dict], path: str = TASK_JSON_PATH) -> None:
+    with open(path, "w+") as f:
+        json.dump(data, f, indent=2)
+
+
 if __name__ == "__main__":
-    # tasks = read_json("tasks.json")
-    # print(json.dumps(get_root(), indent=2))
-    # print("Root depth:", get_root().get_depth())
     tree = get_entire_tree()
-    # print(tree)
     for it in walk_tree(tree):
         print(it.label, it.data)
