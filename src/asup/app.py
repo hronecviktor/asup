@@ -103,6 +103,7 @@ class BaseScreen(Screen):
         with HorizontalScroll(can_focus=False):
             self.tree = get_entire_tree()
             yield self.tree
+            self.tree.root.expand()
             self.editor = TextArea(id="editor", show_line_numbers=True)
             yield self.editor
         yield Footer(id="Footer")
@@ -143,7 +144,7 @@ class BaseScreen(Screen):
             print("No node found for the editor.")
         # TODO turn on/off to write to file
         print(serialize_tree(self.tree))
-        write_json(serialize_tree(self.tree)[0]["items"])
+        # write_json(serialize_tree(self.tree)[0]["items"])
 
 
 class Asup(App):
