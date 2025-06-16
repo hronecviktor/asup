@@ -6,6 +6,8 @@ from textual.widgets import (
     TextArea,
 )
 from textual.app import App, ComposeResult
+
+from asup.print import print_task
 from asup.tasks import (
     get_entire_tree,
     ensure_config_exists,
@@ -25,7 +27,14 @@ class BaseScreen(Screen):
         ("c", "create", "Create task"),
         ("x", "create_list", "Create List"),
         ("d", "delete", "Delete task"),
+        ("p", "print", "Print task"),
     ]
+
+    def action_print(self):
+        if self.selected_node and self.selected_node.data.type == "task":
+            print_task(self.selected_node.data)
+        else:
+            print("No task selected to print.")
 
     def action_create(self) -> None:
         if self.selected_node:
