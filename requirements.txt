@@ -37,8 +37,10 @@ mdurl==0.1.2
     # via markdown-it-py
 packbits==0.6
     # via brother-ql
-pillow==11.2.1
-    # via brother-ql
+pillow==9.5.0
+    # via
+    #   -r requirements.in
+    #   brother-ql
 platformdirs==4.3.8
     # via textual
 pygments==2.19.1

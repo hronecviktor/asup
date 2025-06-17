@@ -1,7 +1,10 @@
+import subprocess
+import os
+
 from html2image import Html2Image
 import jinja2
 
-from asup.tasks import Task
+from tasks import Task
 
 
 def print_task(task: Task):
@@ -17,14 +20,38 @@ def print_task(task: Task):
         "content": task.description,
         "footer": "•" * task.priority,
     }
+    cwd = os.getcwd()
 
     outputText = template.render(templateVars)
     with open("out.html", "w+") as f:
         f.write(outputText)
 
-    print(outputText)
-
     hti.screenshot(
-        url="file:///home/vhronec/PycharmProjects/asup/src/asup/out.html",
-        save_as="test.png",
+        url="file://" + cwd + "/out.html",
+        save_as="asup.png",
     )
+    subprocess.run(
+        [
+            "brother_ql",
+            "print",
+            "-l",
+            "62",
+            "--red",
+            "-r",
+            "90",
+            "asup.png",
+        ],
+        check=True,
+    )
+    os.remove("asup.png")
+    os.remove("out.html")
+
+
+if __name__ == "__main__":
+    task = Task(
+        name="Example Task",
+        description="This is an example task description. 123",
+        completed=False,
+        priority=3,
+    )
+    print_task(task)
