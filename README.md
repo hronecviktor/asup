@@ -14,6 +14,11 @@
 
 ```console
 pip install asup
+# for printing on brother QL printers:
+sudo apt-get install wkhtmltopdf
+# fill out ENV vars:
+export BROTHER_QL_PRINTER=tcp://192.168.1.107:9100
+export BROTHER_QL_MODEL=QL-820NWB
 ```
 
 ## Usage

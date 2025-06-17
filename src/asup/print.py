@@ -2,36 +2,35 @@ import importlib.resources as pkg_resources
 import subprocess
 import os
 
-from html2image import Html2Image
+import imgkit
 import jinja2
 
-from tasks import Task
+from asup.tasks import Task
 
 
 def print_task(task: Task):
-    hti = Html2Image(size=(1109, 696))
     with pkg_resources.path("asup", "template.html") as search_path:
-        templateLoader = jinja2.FileSystemLoader(searchpath=search_path)
+        cwdpath = os.path.dirname(search_path)
+        templateLoader = jinja2.FileSystemLoader(searchpath=cwdpath)
         templateEnv = jinja2.Environment(loader=templateLoader)
-
         TEMPLATE_FILE = "template.html"
         template = templateEnv.get_template(TEMPLATE_FILE)
-
         templateVars = {
             "header": task.name,
             "content": task.description,
             "footer": "•" * task.priority,
         }
-        cwd = os.getcwd()
-
         outputText = template.render(templateVars)
-        with open(cwd + "out.html", "w+") as f:
+        with open("out.html", "w+") as f:
             f.write(outputText)
+        options = {
+            "width": 1109,
+            "height": 696,
+            "disable-smart-width": "",
+            "format": "png",
+        }
+        imgkit.from_file("out.html", "asup.png", options=options)
 
-    hti.screenshot(
-        url="file://" + cwd + "/out.html",
-        save_as="asup.png",
-    )
     subprocess.run(
         [
             "brother_ql",
@@ -44,6 +43,8 @@ def print_task(task: Task):
             "asup.png",
         ],
         check=True,
+        stderr=subprocess.DEVNULL,
+        stdout=subprocess.DEVNULL,
     )
     os.remove("asup.png")
     os.remove("out.html")
