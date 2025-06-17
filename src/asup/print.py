@@ -1,3 +1,4 @@
+import importlib.resources as pkg_resources
 import subprocess
 import os
 
@@ -9,22 +10,23 @@ from tasks import Task
 
 def print_task(task: Task):
     hti = Html2Image(size=(1109, 696))
-    templateLoader = jinja2.FileSystemLoader(searchpath=".")
-    templateEnv = jinja2.Environment(loader=templateLoader)
+    with pkg_resources.path("asup", "template.html") as search_path:
+        templateLoader = jinja2.FileSystemLoader(searchpath=search_path)
+        templateEnv = jinja2.Environment(loader=templateLoader)
 
-    TEMPLATE_FILE = "template.html"
-    template = templateEnv.get_template(TEMPLATE_FILE)
+        TEMPLATE_FILE = "template.html"
+        template = templateEnv.get_template(TEMPLATE_FILE)
 
-    templateVars = {
-        "header": task.name,
-        "content": task.description,
-        "footer": "•" * task.priority,
-    }
-    cwd = os.getcwd()
+        templateVars = {
+            "header": task.name,
+            "content": task.description,
+            "footer": "•" * task.priority,
+        }
+        cwd = os.getcwd()
 
-    outputText = template.render(templateVars)
-    with open("out.html", "w+") as f:
-        f.write(outputText)
+        outputText = template.render(templateVars)
+        with open(cwd + "out.html", "w+") as f:
+            f.write(outputText)
 
     hti.screenshot(
         url="file://" + cwd + "/out.html",
